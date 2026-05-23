@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAssistant AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg flex flex-col h-[80vh]">
+        <div class="bg-slate-900 text-white px-6 py-4 rounded-t-xl flex justify-between items-center">
+            <h1 class="font-semibold">TechAssistant AI - Suporte Nível 1</h1>
+            <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300">Django + LangChain</span>
+        </div>
+        <div id="chat-box" class="flex-1 p-6 overflow-y-auto flex flex-col gap-4 bg-slate-50">
+            <div class="flex justify-start">
+                <div class="bg-white border border-gray-200 text-gray-800 px-4 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[80%] text-sm">
+                    Olá! Sou o assistente virtual da equipe de T.I. Como posso ajudar?
+                </div>
+            </div>
+        </div>
+        <div class="p-4 bg-white border-t rounded-b-xl">
+            <form id="chat-form" class="flex gap-2">
+                <input type="text" id="user-input" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="Descreva seu problema..." required autocomplete="off">
+                <button type="submit" id="send-btn" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors">Enviar</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const chatBox = document.getElementById('chat-box');
+        const sendBtn = document.getElementById('send-btn');
+
+        function appendMessage(content, isUser) {
+            const div = document.createElement('div');
+            div.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+            const innerDiv = document.createElement('div');
+            innerDiv.className = `px-4 py-3 rounded-2xl shadow-sm max-w-[80%] text-sm ${isUser ? 'bg-slate-900 text-white rounded-tr-none' : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none'}`;
+            innerDiv.textContent = content;
+            div.appendChild(innerDiv);
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (!message) return;
+            appendMessage(message, true);
+            userInput.value = '';
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/chat/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                appendMessage(data.reply || 'Erro na resposta da API.', false);
+            } catch (error) {
+                appendMessage('Falha de conexão com o servidor Django.', false);
+            } finally {
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
