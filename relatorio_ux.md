@@ -1,0 +1,7 @@
+# Justificativa de UX (Design Minimalista e Diretivas de Clarificação)
+
+A adoção de um **design minimalista** no contexto de suporte de T.I. apoia-se diretamente na heurística de *Estética e Design Minimalista* (Jakob Nielsen). Em momentos de falha técnica, o usuário já se encontra em estado de alta carga cognitiva e estresse. Interfaces limpas, uso de cores neutras e a remoção de informações irrelevantes diminuem o "ruído visual", permitindo que o usuário ou o administrador de T.I. foque exclusivamente na resolução do problema e na leitura dos dados essenciais.
+
+O uso de **Diretivas de Clarificação** — onde a IA faz perguntas antes de executar ações — atende primariamente à heurística de *Prevenção de Erros*. No suporte técnico, ações precipitadas ou baseadas em falsas premissas podem piorar o cenário (como resetar uma senha incorreta ou reiniciar um serviço crítico indevidamente). Ao forçar uma etapa de confirmação e refinamento de contexto, o sistema garante o alinhamento correto entre o problema real e a solução proposta, evitando retrabalho.
+
+Juntas, essas abordagens reforçam o *Controle e Liberdade do Usuário*. O usuário se sente guiado e seguro por um sistema que não apenas é fácil de ler e navegar, mas que também demonstra "cuidado" ao não tomar decisões autônomas arriscadas. Isso transforma a experiência de suporte — tradicionalmente frustrante e opaca — em um fluxo transparente, colaborativo e previsível, reduzindo drasticamente a ansiedade de quem busca ou presta ajuda técnica.
