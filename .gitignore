@@ -58,3 +58,6 @@ npm-debug.log*
 # LangChain/FAISS
 faiss_index/
 *.index
+
+# Markdown
+System Prompt - Mafe.md

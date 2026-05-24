@@ -1,0 +1,634 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechAssistant AI — Suporte Nível 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PRELOADER
+══════════════════════════════════════ -->
+<div id="preloader">
+  <div class="pl-panel pl-panel-top"></div>
+  <div class="pl-panel pl-panel-bot"></div>
+  <div class="pl-inner">
+    <div class="pl-eyebrow">Initializing System</div>
+    <div class="pl-wordmark">Tech<span class="tg">Assistant AI</span></div>
+    <div class="pl-track"><div class="pl-fill" id="pl-fill"></div></div>
+    <div class="pl-pct" id="pl-pct">000</div>
+  </div>
+</div>
+
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<!-- Dot grid background -->
+<div class="dot-grid" aria-hidden="true"></div>
+
+<!-- ══════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;height:66px;display:flex;align-items:center;justify-content:space-between;">
+
+    <!-- Logo -->
+    <a href="#" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+      <div style="width:34px;height:34px;background:linear-gradient(135deg,var(--cyan),var(--indigo));border-radius:9px;display:flex;align-items:center;justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><polygon points="10,2 18,7 18,13 10,18 2,13 2,7" stroke="white" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="3" fill="white"/></svg>
+      </div>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.02em;color:white;">Tech<span class="tg">Assistant AI</span></span>
+    </a>
+
+    <!-- Links (desktop) -->
+    <div style="display:flex;gap:2rem;align-items:center;" id="nav-links">
+      <a href="#features"     class="nav-link">Funcionalidades</a>
+      <a href="#architecture" class="nav-link">Arquitetura</a>
+      <a href="#metrics"      class="nav-link">Métricas</a>
+      <a href="#team"         class="nav-link">Equipe</a>
+    </div>
+
+    <!-- Right side -->
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <div class="pulse"></div>
+        <span style="font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;">Online</span>
+      </div>
+      <button class="btn-g" onclick="openLoginModal()" style="padding:10px 20px;font-size:14px;border-color:rgba(255,255,255,0.1);" id="nav-login-btn">
+        Login
+      </button>
+      <button class="btn-p" onclick="openDrawer()" style="padding:10px 20px;font-size:14px;">
+        Abrir Chat
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero" style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:9rem 0 5rem;">
+
+  <!-- Decorative rings -->
+  <div aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:680px;height:680px;border:1px solid rgba(34,211,238,.07);border-radius:50%;pointer-events:none;"></div>
+  <div aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:940px;height:940px;border:1px solid rgba(129,140,248,.04);border-radius:50%;pointer-events:none;"></div>
+  <div aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:1200px;height:1200px;border:1px solid rgba(30,41,59,.35);border-radius:50%;pointer-events:none;"></div>
+
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:10;">
+
+    <!-- Eyebrow -->
+    <div id="h-tag" style="opacity:0;margin-bottom:2.2rem;">
+      <span class="tag">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--cyan);display:inline-block;"></span>
+        Projeto Acadêmico · UNIC / Kroton
+      </span>
+    </div>
+
+    <!-- Massive headline -->
+    <div style="margin-bottom:2.2rem;">
+      <div class="hline"><span id="hw1" style="display:inline-block;font-family:'Syne',sans-serif;font-size:clamp(68px,10vw,152px);font-weight:800;line-height:.93;letter-spacing:-.045em;color:white;opacity:0;">TECH</span></div>
+      <div class="hline"><span id="hw2" style="display:inline-block;font-family:'Syne',sans-serif;font-size:clamp(68px,10vw,152px);font-weight:800;line-height:.93;letter-spacing:-.045em;opacity:0;" class="tg"><span class="tg">ASSISTANT</span></span></div>
+      <div class="hline" style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;">
+        <span id="hw3" style="display:inline-block;font-family:'Syne',sans-serif;font-size:clamp(68px,10vw,152px);font-weight:800;line-height:.93;letter-spacing:-.045em;color:white;opacity:0;">AI</span>
+        <span id="hw4" style="display:inline-block;font-family:'JetBrains Mono',monospace;font-size:clamp(16px,2.2vw,30px);color:var(--muted);font-weight:400;opacity:0;">— NÍVEL 1</span>
+      </div>
+    </div>
+
+    <!-- Subtitle -->
+    <p id="h-sub" style="opacity:0;max-width:580px;font-size:clamp(16px,1.8vw,20px);color:var(--muted);line-height:1.75;margin-bottom:2.5rem;">
+      Agente autônomo de suporte técnico com <strong style="color:var(--text);font-weight:500;">RAG vetorial FAISS</strong> e <strong style="color:var(--text);font-weight:500;">Tool Calling nativo via LangGraph</strong>. Resolve incidentes de T.I. nível 1 com precisão cirúrgica, antes que virem catástrofes.
+    </p>
+
+    <!-- CTA buttons -->
+    <div id="h-ctas" style="opacity:0;display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:4rem;">
+      <button class="btn-p" onclick="openDrawer()">
+        Iniciar Atendimento
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <a href="#architecture" class="btn-g">
+        Ver Arquitetura
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+      <div style="display:flex;align-items:center;gap:8px;color:var(--faint);font-size:13px;font-family:'JetBrains Mono',monospace;">
+        <span style="color:#22c55e;">●</span> gpt-4o-mini · temperature=0
+      </div>
+    </div>
+
+    <!-- Terminal card -->
+    <div id="h-term" style="opacity:0;max-width:540px;background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;">
+      <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+        <span style="width:12px;height:12px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
+        <span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>
+        <span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
+        <span style="margin-left:10px;font-size:12px;color:var(--faint);font-family:'JetBrains Mono',monospace;">agent.py · TechAssistant v1.0.0</span>
+      </div>
+      <div style="padding:22px 26px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.95;">
+        <div><span style="color:var(--indigo);">›</span> <span style="color:var(--muted);">USER:</span> <span style="color:var(--text);">"Não consigo acessar o Wi-Fi corporativo."</span></div>
+        <div style="color:var(--faint);padding-left:14px;">  [tool] search_knowledge_base("wifi WPA2 corporativo")</div>
+        <div style="color:var(--faint);padding-left:14px;">  [tool] mock_network_status("R-BLOCO-B")</div>
+        <div><span style="color:var(--cyan);">›</span> <span style="color:var(--muted);">AGENT:</span> <span style="color:var(--text);">Roteador offline. Procedimento KB-0018 enviado.</span></div>
+        <div style="margin-top:10px;"><span style="color:#22c55e;">✓</span> <span style="color:var(--faint);">Ticket resolvido em</span> <span style="color:var(--cyan);font-weight:500;">0.8s</span><span style="color:var(--faint);"> · 3 tools called</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="hero-3d" aria-hidden="true">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:450px;height:450px;border-radius:50%;background:radial-gradient(circle, rgba(34,211,238,0.12) 0%, rgba(129,140,248,0.04) 40%, transparent 70%);z-index:0;pointer-events:none;filter:blur(30px);"></div>
+    <style>#hero-3d canvas { position: relative; z-index: 1; }</style>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div id="h-scroll" style="opacity:0;position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;">
+    <span style="font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace;letter-spacing:.08em;">SCROLL</span>
+    <div style="width:1px;height:44px;background:linear-gradient(to bottom,var(--faint),transparent);"></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     MARQUEE BAND
+══════════════════════════════════════ -->
+<div style="overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:15px 0;background:rgba(15,23,42,.6);position:relative;z-index:10;" aria-hidden="true">
+  <div class="mtrack">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> RAG Vetorial FAISS</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> LangGraph ReAct</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> GPT-4o-mini · T=0</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> OpenAI Embeddings</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> Django Framework</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> Tool Calling Nativo</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> Suporte T.I. Nível 1</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> Diretivas de Clarificação</span>
+    <!-- duplicate for seamless loop -->
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> RAG Vetorial FAISS</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> LangGraph ReAct</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> GPT-4o-mini · T=0</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> OpenAI Embeddings</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> Django Framework</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> Tool Calling Nativo</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--cyan);">⬡</span> Suporte T.I. Nível 1</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:10px;"><span style="color:var(--indigo);">⬡</span> Diretivas de Clarificação</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     METRICS
+══════════════════════════════════════ -->
+<section id="metrics" style="position:relative;z-index:10;padding:6rem 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;" id="metrics-grid">
+
+      <div class="scard" style="border-right:1px solid var(--border);">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:52px;line-height:1;background:linear-gradient(135deg,var(--cyan),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0.4<span style="font-size:28px;">s</span></div>
+        <div style="margin-top:10px;color:var(--muted);font-size:14px;">Latência Auth API</div>
+        <div style="margin-top:4px;color:var(--faint);font-size:11px;font-family:'JetBrains Mono',monospace;">mock_auth_api ✓</div>
+      </div>
+
+      <div class="scard" style="border-right:1px solid var(--border);">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:52px;line-height:1;color:var(--indigo);">0.5<span style="font-size:28px;">s</span></div>
+        <div style="margin-top:10px;color:var(--muted);font-size:14px;">Status de Rede</div>
+        <div style="margin-top:4px;color:var(--faint);font-size:11px;font-family:'JetBrains Mono',monospace;">mock_network_status ✓</div>
+      </div>
+
+      <div class="scard" style="border-right:1px solid var(--border);">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:52px;line-height:1;background:linear-gradient(135deg,var(--cyan),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0.8<span style="font-size:28px;">s</span></div>
+        <div style="margin-top:10px;color:var(--muted);font-size:14px;">Consulta RAG</div>
+        <div style="margin-top:4px;color:var(--faint);font-size:11px;font-family:'JetBrains Mono',monospace;">search_knowledge_base ✓</div>
+      </div>
+
+      <div class="scard">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:52px;line-height:1;color:var(--indigo);">100<span style="font-size:28px;">%</span></div>
+        <div style="margin-top:10px;color:var(--muted);font-size:14px;">Taxa de Sucesso</div>
+        <div style="margin-top:4px;color:var(--faint);font-size:11px;font-family:'JetBrains Mono',monospace;">Todos os cenários ✓</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     FEATURES
+══════════════════════════════════════ -->
+<section id="features" style="position:relative;z-index:10;padding:5rem 0 6rem;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
+
+    <div class="reveal" style="text-align:center;margin-bottom:4.5rem;">
+      <span class="tag" style="margin-bottom:1.5rem;display:inline-flex;">Capacidades do Sistema</span>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(36px,5.5vw,68px);font-weight:800;letter-spacing:-.035em;line-height:1.05;">
+        Como o Agente<br/><span class="tg">Resolve Problemas</span>
+      </h2>
+      <p style="margin-top:1.5rem;color:var(--muted);font-size:18px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.7;">
+        Uma arquitetura orientada a ferramentas que garante diagnóstico preciso e rastreável em cada chamado.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" id="features-grid">
+
+      <!-- RAG -->
+      <div class="fcard">
+        <div class="ci" style="width:52px;height:52px;background:var(--cyan-glow);border:1px solid rgba(34,211,238,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round">
+            <path d="M4 6h16M4 10h16M4 14h10M4 18h8"/><circle cx="19" cy="17" r="3"/><path d="M21.5 19.5l-2-2"/>
+          </svg>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:.1em;margin-bottom:10px;text-transform:uppercase;">RAG — Retrieval-Augmented</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em;">Base de Conhecimento Vetorial</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">Indexação FAISS com OpenAI Embeddings. Cada consulta recupera os 2 documentos mais relevantes em milissegundos — seja sobre reset de senha, Wi-Fi WPA2 ou portal acadêmico.</p>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;padding:4px 10px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">FAISS</span>
+          <span style="font-size:11px;padding:4px 10px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">Embeddings</span>
+          <span style="font-size:11px;padding:4px 10px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">similarity_search(k=2)</span>
+        </div>
+      </div>
+
+      <!-- LangGraph -->
+      <div class="fcard">
+        <div class="ci" style="width:52px;height:52px;background:var(--indigo-glow);border:1px solid rgba(129,140,248,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="5" cy="12" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="19" cy="19" r="2.5"/>
+            <path d="M7.5 12h4.5l2-5"/><path d="M7.5 12h4.5l2 5"/>
+          </svg>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--indigo);letter-spacing:.1em;margin-bottom:10px;text-transform:uppercase;">LangGraph — ReAct Agent</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em;">Raciocínio + Ação Nativo</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">O agente ReAct decide qual ferramenta acionar, executa, observa e raciocina novamente — com diretivas de clarificação obrigatórias para ambiguidades. Nenhuma ação precipitada.</p>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;padding:4px 10px;background:rgba(129,140,248,.07);color:var(--indigo);border-radius:100px;font-family:'JetBrains Mono',monospace;">create_react_agent</span>
+          <span style="font-size:11px;padding:4px 10px;background:rgba(129,140,248,.07);color:var(--indigo);border-radius:100px;font-family:'JetBrains Mono',monospace;">Tool Calling</span>
+          <span style="font-size:11px;padding:4px 10px;background:rgba(129,140,248,.07);color:var(--indigo);border-radius:100px;font-family:'JetBrains Mono',monospace;">gpt-4o-mini</span>
+        </div>
+      </div>
+
+      <!-- Tools -->
+      <div class="fcard">
+        <div class="ci" style="width:52px;height:52px;background:var(--cyan-glow);border:1px solid rgba(34,211,238,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round">
+            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+          </svg>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:.1em;margin-bottom:10px;text-transform:uppercase;">Tools — Diagnóstico Ativo</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em;">APIs de Diagnóstico em Tempo Real</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">Verificação de credenciais via <code style="color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:12px;">mock_auth_api</code> e status de roteadores via <code style="color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:12px;">mock_network_status</code>. Diagnóstico determinístico, sem suposições.</p>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;padding:4px 10px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">mock_auth_api</span>
+          <span style="font-size:11px;padding:4px 10px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">mock_network_status</span>
+          <span style="font-size:11px;padding:4px 10px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">@tool</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     ARCHITECTURE
+══════════════════════════════════════ -->
+<section id="architecture" style="position:relative;z-index:10;padding:6rem 0;background:rgba(15,23,42,.45);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;" id="arch-grid">
+
+      <!-- Left text -->
+      <div class="reveal">
+        <span class="tag" style="margin-bottom:1.5rem;display:inline-flex;">Arquitetura do Sistema</span>
+        <h2 style="font-family:'Syne',sans-serif;font-size:clamp(32px,4.5vw,56px);font-weight:800;letter-spacing:-.035em;line-height:1.1;margin-bottom:1.5rem;">
+          Modular.<br/>Determinístico.<br/><span class="tg">Pronto para Produção.</span>
+        </h2>
+        <p style="color:var(--muted);font-size:16px;line-height:1.8;margin-bottom:2rem;">
+          Três camadas bem definidas: Django como orquestrador seguro de rotas, LangGraph como motor de raciocínio iterativo, e FAISS como memória vetorizada de longo prazo.
+        </p>
+
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:38px;height:38px;flex-shrink:0;background:var(--cyan-glow);border:1px solid rgba(34,211,238,.18);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#22d3ee" stroke-width="1.5"><rect x="3" y="3" width="6" height="14" rx="2"/><rect x="11" y="3" width="6" height="6" rx="2"/><rect x="11" y="11" width="6" height="6" rx="2"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:15px;margin-bottom:4px;">Frontend Minimalista (Nielsen)</div>
+              <div style="color:var(--muted);font-size:14px;line-height:1.65;">HTML5 + Tailwind CSS. Interface limpa reduz carga cognitiva em momentos de falha técnica. Heurística de Estética e Design Minimalista.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:38px;height:38px;flex-shrink:0;background:var(--indigo-glow);border:1px solid rgba(129,140,248,.18);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#818cf8" stroke-width="1.5"><rect x="2" y="5" width="16" height="10" rx="3"/><path d="M6 9h2M6 11h4"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:15px;margin-bottom:4px;">Backend Django 6.0</div>
+              <div style="color:var(--muted);font-size:14px;line-height:1.65;">Monolito Python com rotas seguras. Separa a camada de apresentação da lógica de negócio e do agente IA.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:38px;height:38px;flex-shrink:0;background:var(--cyan-glow);border:1px solid rgba(34,211,238,.18);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#22d3ee" stroke-width="1.5"><circle cx="5" cy="10" r="2.5"/><circle cx="15" cy="5" r="2.5"/><circle cx="15" cy="15" r="2.5"/><path d="M7.5 10h4l1.5-3.5"/><path d="M7.5 10h4l1.5 3.5"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:15px;margin-bottom:4px;">Core IA: LangGraph + FAISS</div>
+              <div style="color:var(--muted);font-size:14px;line-height:1.65;">ReAct agent com 3 ferramentas integradas. FAISS indexa manuais e políticas. Temperature=0 garante determinismo.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: flow diagram -->
+      <div class="reveal">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:2rem;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(129,140,248,.05),transparent 65%);pointer-events:none;"></div>
+
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);margin-bottom:1.5rem;letter-spacing:.08em;">FLUXO DE PROCESSAMENTO</div>
+
+          <div class="fstep" style="border-color:rgba(34,211,238,.18);background:rgba(34,211,238,.05);">
+            <div class="fstep-num" style="background:rgba(34,211,238,.15);color:var(--cyan);">01</div>
+            <div><div style="font-weight:600;font-size:14px;margin-bottom:2px;">Input do Usuário</div><div style="color:var(--faint);font-size:12px;font-family:'JetBrains Mono',monospace;">Django View → AgentWrapper.invoke()</div></div>
+          </div>
+          <div class="connector"></div>
+
+          <div class="fstep" style="border-color:rgba(129,140,248,.18);background:rgba(129,140,248,.05);">
+            <div class="fstep-num" style="background:rgba(129,140,248,.15);color:var(--indigo);">02</div>
+            <div><div style="font-weight:600;font-size:14px;margin-bottom:2px;">Raciocínio ReAct</div><div style="color:var(--faint);font-size:12px;font-family:'JetBrains Mono',monospace;">LangGraph decide qual tool acionar</div></div>
+          </div>
+          <div class="connector"></div>
+
+          <div class="fstep" style="border-color:var(--border);background:rgba(34,211,238,.03);">
+            <div class="fstep-num" style="background:rgba(34,211,238,.08);color:var(--cyan);">03</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:14px;margin-bottom:8px;">Execução de Tools</div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap;">
+                <span style="font-size:11px;padding:2px 9px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">search_kb</span>
+                <span style="font-size:11px;padding:2px 9px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">auth_api</span>
+                <span style="font-size:11px;padding:2px 9px;background:rgba(34,211,238,.07);color:var(--cyan);border-radius:100px;font-family:'JetBrains Mono',monospace;">net_status</span>
+              </div>
+            </div>
+          </div>
+          <div class="connector"></div>
+
+          <div class="fstep" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06);">
+            <div class="fstep-num" style="background:rgba(34,197,94,.15);color:#22c55e;">✓</div>
+            <div><div style="font-weight:600;font-size:14px;margin-bottom:2px;color:#22c55e;">Resposta Final</div><div style="color:var(--faint);font-size:12px;font-family:'JetBrains Mono',monospace;">messages[-1].content → Frontend</div></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     UX SECTION
+══════════════════════════════════════ -->
+<section style="position:relative;z-index:10;padding:6rem 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
+
+    <div class="reveal" style="text-align:center;margin-bottom:4.5rem;">
+      <span class="tag" style="margin-bottom:1.5rem;display:inline-flex;">UX Research · Heurísticas de Nielsen</span>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,62px);font-weight:800;letter-spacing:-.035em;line-height:1.1;">
+        Design que <span class="tg">Reduz o Estresse</span><br/>em Momentos Críticos
+      </h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;" id="ux-grid">
+
+      <div class="uxcard">
+        <div style="font-size:36px;margin-bottom:1.2rem;">🎯</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase;">Heurística #8 · Nielsen</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em;">Estética Minimalista</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">Em falhas técnicas o usuário já enfrenta alta carga cognitiva. Cores neutras e interfaces limpas removem o ruído visual e permitem foco exclusivo na solução do problema.</p>
+      </div>
+
+      <div class="uxcard">
+        <div style="font-size:36px;margin-bottom:1.2rem;">🛡️</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--indigo);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase;">Heurística #5 · Nielsen</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em;">Prevenção de Erros</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">Diretivas de Clarificação forçam alinhamento antes de qualquer ação. Evita resetar senhas incorretas ou reiniciar serviços críticos baseado em premissas falsas.</p>
+      </div>
+
+      <div class="uxcard">
+        <div style="font-size:36px;margin-bottom:1.2rem;">🎮</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase;">Heurística #3 · Nielsen</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em;">Controle e Liberdade</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">O sistema guia sem decidir autonomamente. Transforma o suporte — usualmente opaco e frustrante — em um fluxo transparente, colaborativo e previsível.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     TEAM
+══════════════════════════════════════ -->
+<section id="team" style="position:relative;z-index:10;padding:6rem 0;border-top:1px solid var(--border);">
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
+
+    <div class="reveal" style="text-align:center;margin-bottom:4rem;">
+      <span class="tag" style="margin-bottom:1.5rem;display:inline-flex;">A Equipe</span>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;letter-spacing:-.035em;">Quem Construiu</h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;" id="team-grid">
+
+      <div class="tcard">
+        <div style="width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--indigo));display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#030712;">KV</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;">Kleber Vinícius</div>
+        <div style="color:var(--cyan);font-size:12px;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">Tech Lead</div>
+        <div style="color:var(--muted);font-size:13px;">Arquitetura Backend & Agente IA</div>
+      </div>
+
+      <div class="tcard">
+        <div style="width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#f472b6,var(--indigo));display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#030712;">MF</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;">Mafe</div>
+        <div style="color:var(--indigo);font-size:12px;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">UX/UI Lead</div>
+        <div style="color:var(--muted);font-size:13px;">UX Design & Dashboard Admin</div>
+      </div>
+
+      <div class="tcard">
+        <div style="width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#fb923c,#f59e0b);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#030712;">GB</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;">Gabriel</div>
+        <div style="color:#fb923c;font-size:12px;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">Visual Architect</div>
+        <div style="color:var(--muted);font-size:13px;">Arquitetura Visual & Diagramação</div>
+      </div>
+
+      <div class="tcard">
+        <div style="width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#34d399,#22d3ee);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#030712;">DG</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;">Diogo</div>
+        <div style="color:#34d399;font-size:12px;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">QA Engineer</div>
+        <div style="color:var(--muted);font-size:13px;">QA & Testes Quantitativos</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer style="position:relative;z-index:10;border-top:1px solid var(--border);padding:3.5rem 0 2rem;background:rgba(15,23,42,.3);">
+  <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
+    <div style="display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:start;margin-bottom:2.5rem;" id="footer-top">
+
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:30px;height:30px;background:linear-gradient(135deg,var(--cyan),var(--indigo));border-radius:8px;"></div>
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:17px;">TechAssistant <span class="tg">AI</span></span>
+        </div>
+        <p style="color:var(--faint);font-size:14px;max-width:380px;line-height:1.65;">Projeto Acadêmico — UNIC/Kroton. Agente autônomo de suporte técnico Nível 1 com RAG e Tool Calling. Licença MIT.</p>
+      </div>
+
+      <div style="text-align:right;">
+        <div style="color:var(--faint);font-size:12px;font-family:'JetBrains Mono',monospace;margin-bottom:12px;">Python 3.14 · Django 6.0 · LangGraph</div>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+          <a href="#" style="color:var(--faint);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--faint)'">GitHub →</a>
+          <a href="#" style="color:var(--faint);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--faint)'">Documentação →</a>
+          <a href="#" style="color:var(--faint);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--faint)'">Licença MIT →</a>
+        </div>
+      </div>
+
+    </div>
+    <div style="padding-top:2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <span style="color:var(--faint);font-size:12px;font-family:'JetBrains Mono',monospace;">© 2025 TechAssistant AI · Projeto Acadêmico</span>
+      <div style="display:flex;align-items:center;gap:7px;">
+        <div class="pulse"></div>
+        <span style="color:var(--faint);font-size:12px;font-family:'JetBrains Mono',monospace;">Sistema Operacional</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════════
+     FAB
+══════════════════════════════════════ -->
+<button class="fab" onclick="openDrawer()" aria-label="Abrir chat de suporte técnico">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+  </svg>
+</button>
+
+
+<!-- ══════════════════════════════════════
+     CHAT DRAWER
+══════════════════════════════════════ -->
+<div class="doverlay" id="doverlay" onclick="closeDrawer()"></div>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Chat de Suporte TechAssistant AI">
+
+  <!-- Drawer header -->
+  <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:13px;">
+      <div style="width:42px;height:42px;background:linear-gradient(135deg,var(--cyan),var(--indigo));border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;">TechAssistant AI</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+          <div class="pulse" style="width:6px;height:6px;"></div>
+          <span style="font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace;">Agente Online · Nível 1</span>
+        </div>
+      </div>
+    </div>
+    <button onclick="closeDrawer()" style="background:none;border:none;color:var(--muted);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s;" onmouseover="this.style.background='rgba(255,255,255,.06)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='var(--muted)'" aria-label="Fechar chat">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M5 5l8 8M13 5l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- ─── INJECT YOUR CHAT CODE BELOW THIS COMMENT ─── -->
+  <!-- Messages container -->
+  <form style="display:none;">{% csrf_token %}</form>
+  <div class="msgs" id="chat-container">
+
+    <!-- Welcome bubble -->
+    <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:1rem;">
+      <div style="width:30px;height:30px;flex-shrink:0;border-radius:8px;background:linear-gradient(135deg,var(--cyan),var(--indigo));display:flex;align-items:center;justify-content:center;margin-top:2px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace;margin-bottom:6px;">TechAssistant AI · Agora</div>
+        <div style="background:rgba(15,23,42,.8);border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:12px 16px;font-size:14px;line-height:1.65;max-width:300px;color:var(--text);">
+          Olá! Sou o Assistente de T.I. Nível 1. 🔧<br/><br/>
+          <span style="color:var(--muted);font-size:13px;">Descreva o problema e vou diagnosticar usando nossa base de conhecimento e ferramentas de diagnóstico.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div style="padding-left:40px;display:flex;flex-direction:column;gap:7px;margin-bottom:1rem;">
+      <div style="font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace;margin-bottom:2px;">Problemas frequentes:</div>
+      <button class="qa" onclick="quickSend(this)">🔐 Não consigo fazer login</button>
+      <button class="qa" onclick="quickSend(this)">📶 Wi-Fi corporativo não conecta</button>
+      <button class="qa" onclick="quickSend(this)">🎓 Acesso ao portal acadêmico</button>
+      <button class="qa" onclick="quickSend(this)">🔑 Redefinir senha do sistema</button>
+    </div>
+
+  </div>
+  <!-- ─── END OF CHAT INJECT ZONE ─── -->
+
+  <!-- Input area -->
+  <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);flex-shrink:0;">
+    <div id="input-wrap" style="display:flex;gap:10px;align-items:flex-end;background:rgba(3,7,18,.7);border:1px solid var(--border);border-radius:16px;padding:11px 14px;transition:border-color .25s;" onfocusin="this.style.borderColor='rgba(34,211,238,.3)'" onfocusout="this.style.borderColor='var(--border)'">
+      <textarea id="msg-input" placeholder="Descreva o problema de T.I..." rows="1" style="flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;resize:none;line-height:1.55;max-height:110px;overflow-y:auto;" oninput="autoGrow(this)"></textarea>
+      <button onclick="sendMsg()" style="background:linear-gradient(135deg,var(--cyan),var(--indigo));border:none;width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s,transform .2s;" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'" aria-label="Enviar mensagem">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M2 8l12-5.5-4 5.5 4 5.5z"/></svg>
+      </button>
+    </div>
+    <div style="text-align:center;margin-top:8px;color:var(--faint);font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;">Powered by GPT-4o-mini · LangGraph ReAct · FAISS</div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════
+     LOGIN MODAL
+══════════════════════════════════════ -->
+<div id="login-modal" style="position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;">
+  <div style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(5px);z-index:1;" onclick="closeLoginModal()"></div>
+  <div id="login-modal-box" style="position:relative;z-index:2;background:rgba(15,23,42,0.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:2.5rem;width:90%;max-width:400px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);transform:scale(0.95);">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,var(--cyan),var(--indigo));border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:24px;">Autenticação</h3>
+      <p style="color:var(--muted);font-size:14px;margin-top:0.5rem;">Acesso restrito. Insira suas credenciais.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.25rem;">
+      <div>
+        <label style="display:block;font-size:12px;color:var(--faint);font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Usuário</label>
+        <input type="text" id="login-user" style="width:100%;background:rgba(3,7,18,0.5);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--cyan)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+      <div>
+        <label style="display:block;font-size:12px;color:var(--faint);font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Senha</label>
+        <input type="password" id="login-pass" style="width:100%;background:rgba(3,7,18,0.5);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--cyan)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter') submitLogin()">
+      </div>
+      <button class="btn-p" onclick="submitLogin()" style="width:100%;justify-content:center;margin-top:0.5rem;padding:14px;">Entrar</button>
+    </div>
+    <div id="login-error" style="color:#ef4444;font-size:13px;text-align:center;margin-top:1rem;opacity:0;transition:opacity 0.2s;">Credenciais inválidas.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════ -->
+<script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>
