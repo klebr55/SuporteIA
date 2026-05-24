@@ -13,6 +13,9 @@ except Exception as e:
 def chat_page(request: HttpRequest) -> HttpResponse:
     return render(request, 'chat.html')
 
+def dashboard_page(request: HttpRequest) -> HttpResponse:
+    return render(request, 'dashboard.html')
+
 @csrf_exempt
 def chat_api(request: HttpRequest) -> JsonResponse:
     if request.method == 'POST':
