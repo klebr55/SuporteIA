@@ -84,8 +84,9 @@ Para executar o TechAssistant AI em ambiente de desenvolvimento local, siga os p
 
 ## Autoria e Agradecimentos
 
-- **Autor:** Kleber Vinícius — Software Engineer.  
+- **Autor:** Kleber Vinícius — Software Engineer | Maria Fernanda - UX/UI | Gabriel - Visual Architect | Diogo - QA Engineer
+
 Projeto desenvolvido como parte da grade de graduação em Ciência da Computação pela UNIC.
 
 - **Agradecimentos Especiais:**  
-Um profundo e sincero agradecimento ao professor e mentor **Éder Lemes**, pela orientação técnica contínua, valiosos conselhos de arquitetura de software e incentivo incansável ao longo de toda a jornada deste projeto acadêmico.
+Um profundo e sincero agradecimento ao professor e mentor **Carlos Juliani**, pela orientação técnica contínua, valiosos conselhos de arquitetura de software e incentivo incansável ao longo de toda a jornada deste projeto acadêmico.
