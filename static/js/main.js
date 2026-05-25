@@ -65,18 +65,21 @@
         closeLoginModal();
         var btn = document.getElementById('nav-login-btn');
         if(btn) {
-          btn.innerHTML = '<span style="color:#22c55e;">✓</span> Autenticado';
-          btn.style.borderColor = 'rgba(34,197,94,0.3)';
+          btn.innerHTML = '<span class="text-green-500">✓</span> Autenticado';
+          btn.classList.replace('border-[var(--border)]', 'border-green-500/30');
           btn.onclick = null;
         }
-        err.style.opacity = '0';
+        err.classList.remove('opacity-100');
+        err.classList.add('opacity-0');
         setTimeout(openDrawer, 300);
       } else {
-        err.style.opacity = '1';
+        err.classList.remove('opacity-0');
+        err.classList.add('opacity-100');
       }
     } catch(e) {
       err.textContent = "Erro de conexão.";
-      err.style.opacity = '1';
+      err.classList.remove('opacity-0');
+      err.classList.add('opacity-100');
     }
   }
 
@@ -120,8 +123,8 @@ async function sendMsg() {
   var typingId = 'typing-' + Date.now();
   var typingEl = document.createElement('div');
   typingEl.id = typingId;
-  typingEl.style.cssText = 'display:flex;gap:10px;align-items:flex-start;margin-bottom:1rem;';
-  typingEl.innerHTML = '<div style="width:30px;height:30px;flex-shrink:0;border-radius:8px;background:linear-gradient(135deg,var(--cyan),var(--indigo));display:flex;align-items:center;justify-content:center;margin-top:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><div style="font-size:11px;color:var(--faint);font-family:\'JetBrains Mono\',monospace;margin-bottom:6px;">TechAssistant AI</div><div style="background:rgba(15,23,42,.8);border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:12px 16px;font-size:14px;color:var(--text);"><span class="pulse" style="display:inline-block;width:6px;height:6px;margin-right:4px;"></span> Processando...</div></div>';
+  typingEl.className = 'flex gap-2.5 items-start mb-4';
+  typingEl.innerHTML = '<div class="w-[30px] h-[30px] shrink-0 rounded-lg bg-gradient-to-br from-[var(--cyan)] to-[var(--indigo)] flex items-center justify-center mt-0.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><div class="text-[11px] text-[var(--faint)] font-mono mb-1.5">TechAssistant AI</div><div class="bg-slate-900/80 border border-[var(--border)] rounded-[4px_14px_14px_14px] px-4 py-3 text-sm text-[var(--text)]"><span class="pulse inline-block w-1.5 h-1.5 mr-1"></span> Processando...</div></div>';
   c.appendChild(typingEl);
   c.scrollTop = c.scrollHeight;
   try {
@@ -152,8 +155,8 @@ function quickSend(btn) {
 function appendUserBubble(text) {
   var c = document.getElementById('chat-container');
   var el = document.createElement('div');
-  el.style.cssText = 'display:flex;justify-content:flex-end;margin-bottom:1rem;';
-  el.innerHTML = '<div style="background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(129,140,248,.12));border:1px solid rgba(34,211,238,.18);border-radius:14px 4px 14px 14px;padding:10px 14px;font-size:14px;line-height:1.6;max-width:270px;color:var(--text);">' + text + '</div>';
+  el.className = 'flex justify-end mb-4';
+  el.innerHTML = '<div class="bg-gradient-to-br from-[#22d3ee20] to-[#818cf820] border border-[#22d3ee30] rounded-[14px_4px_14px_14px] px-3.5 py-2.5 text-sm leading-[1.6] max-w-[270px] text-[var(--text)]">' + text + '</div>';
   c.appendChild(el);
   c.scrollTop = c.scrollHeight;
 }
@@ -161,8 +164,8 @@ function appendUserBubble(text) {
 function appendAIBubble(text) {
   var c = document.getElementById('chat-container');
   var el = document.createElement('div');
-  el.style.cssText = 'display:flex;gap:10px;align-items:flex-start;margin-bottom:1rem;';
-  el.innerHTML = '<div style="width:30px;height:30px;flex-shrink:0;border-radius:8px;background:linear-gradient(135deg,var(--cyan),var(--indigo));display:flex;align-items:center;justify-content:center;margin-top:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><div style="font-size:11px;color:var(--faint);font-family:\'JetBrains Mono\',monospace;margin-bottom:6px;">TechAssistant AI · Agora</div><div style="background:rgba(15,23,42,.8);border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:12px 16px;font-size:14px;line-height:1.65;max-width:300px;color:var(--text);">' + text.replace(/\n/g, '<br>') + '</div></div>';
+  el.className = 'flex gap-2.5 items-start mb-4';
+  el.innerHTML = '<div class="w-[30px] h-[30px] shrink-0 rounded-lg bg-gradient-to-br from-[var(--cyan)] to-[var(--indigo)] flex items-center justify-center mt-0.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><div class="text-[11px] text-[var(--faint)] font-mono mb-1.5">TechAssistant AI · Agora</div><div class="bg-slate-900/80 border border-[var(--border)] rounded-[4px_14px_14px_14px] px-4 py-3 text-sm leading-[1.65] max-w-[300px] text-[var(--text)]">' + text.replace(/\n/g, '<br>') + '</div></div>';
   c.appendChild(el);
   c.scrollTop = c.scrollHeight;
 }
@@ -370,7 +373,7 @@ function appendAIBubble(text) {
     if(!el) return;
     _h3d.scene  = new THREE.Scene();
     _h3d.camera = new THREE.PerspectiveCamera(45, el.clientWidth/el.clientHeight, 0.1, 100);
-    _h3d.camera.position.set(0, 0.2, 3.5);
+    _h3d.camera.position.set(0, 0.2, window.innerWidth < 768 ? 5.5 : 3.5);
     _h3d.camera.lookAt(0, 0.2, 0);
     _h3d.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:'high-performance'});
     _h3d.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
@@ -478,19 +481,6 @@ function appendAIBubble(text) {
         (function _loop(){
           requestAnimationFrame(_loop);
           var el = document.getElementById('hero-3d');
-          if (el && _h3d.renderer) {
-            var canvas = _h3d.renderer.domElement;
-            var pr = Math.min(window.devicePixelRatio, 2);
-            var w = el.clientWidth;
-            var h = el.clientHeight;
-            var expectedW = Math.floor(w * pr);
-            var expectedH = Math.floor(h * pr);
-            if (canvas.width !== expectedW || canvas.height !== expectedH) {
-              _h3d.renderer.setSize(w, h, false);
-              _h3d.camera.aspect = w / h;
-              _h3d.camera.updateProjectionMatrix();
-            }
-          }
           if(_h3d.mixer) _h3d.mixer.update(_h3d.clock.getDelta());
           _h3d.renderer.render(_h3d.scene, _h3d.camera);
         })();
@@ -535,3 +525,26 @@ function appendAIBubble(text) {
       _h3d.model.rotation.y = (_h3d.baseRY || 0) + _h3d._cy;
     })();
   })();
+
+  /* ── Global Blindado Resize Listener ── */
+  window.addEventListener('resize', () => {
+      if (_h3d && _h3d.camera && _h3d.renderer) {
+          var el = document.getElementById('hero-3d');
+          if(el) {
+              _h3d.camera.aspect = el.clientWidth / el.clientHeight;
+              _h3d.camera.updateProjectionMatrix();
+              _h3d.renderer.setSize(el.clientWidth, el.clientHeight);
+              _h3d.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+              if (window.innerWidth < 768) {
+                  _h3d.camera.position.z = 6.8;
+              } else {
+                  _h3d.camera.position.z = 3.5;
+              }
+          }
+      }
+      
+      if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.refresh();
+      }
+  });
