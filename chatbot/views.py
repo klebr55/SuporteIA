@@ -1,8 +1,10 @@
 import json
 from django.http import JsonResponse, HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from agent import create_tech_assistant_agent
 
 try:
@@ -34,7 +36,19 @@ def chat_api(request: HttpRequest) -> JsonResponse:
             return JsonResponse({'reply': f'Erro no servidor: {str(e)}'}, status=500)
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
 
+@login_required(login_url='/?login_required=1')
+@require_http_methods(["GET"])
 def dashboard_view(request: HttpRequest) -> HttpResponse:
+    # Camada extra: verificação explícita mesmo que o decorator seja bypassed
+    if not request.user.is_authenticated:
+        return redirect('/?login_required=1')
+    # Camada extra: apenas staff/admin acessa a dashboard
+    if not request.user.is_staff:
+        return HttpResponse(
+            '<h1>403 — Acesso Negado</h1><p>Você não tem permissão para acessar esta página.</p>',
+            status=403,
+            content_type='text/html'
+        )
     return render(request, 'dashboard.html')
 
 def index_view(request: HttpRequest) -> HttpResponse:

@@ -126,3 +126,19 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# ── Authentication ──────────────────────────────────────────────────────────
+# URL para redirecionar quando @login_required falha
+LOGIN_URL = '/?login_required=1'
+# Após login bem-sucedido, redireciona para a raiz
+LOGIN_REDIRECT_URL = '/'
+
+# ── Session security ─────────────────────────────────────────────────────────
+# Impede que JavaScript acesse o cookie de sessão (proteção XSS)
+SESSION_COOKIE_HTTPONLY = True
+# Cookie de sessão não é enviado em requisições cross-site (proteção CSRF extra)
+SESSION_COOKIE_SAMESITE = 'Lax'
+# Tempo de expiração da sessão: 8 horas
+SESSION_COOKIE_AGE = 28800
+# Encerra a sessão ao fechar o navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
